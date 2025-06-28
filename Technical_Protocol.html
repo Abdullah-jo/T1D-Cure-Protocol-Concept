@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Technical Protocol | A Conceptual Framework for Dual CRISPR-HSC Engineering in T1D</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&family=Source+Serif+Pro:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary-blue: #0d6efd;
+      --primary-dark: #212529;
+      --primary-text: #343a40;
+      --secondary-text: #6c757d;
+      --accent-red: #dc3545;
+      --accent-yellow: #ffc107;
+      --bg-main: #f8f9fa;
+      --bg-container: #ffffff;
+      --border-color: #e9ecef;
+      --code-bg: #282c34;
+      --code-header: #212529;
+      --code-text: #abb2bf;
+      --shadow-sm: 0 2px 8px rgba(0,0,0,0.06);
+      --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+      --border-radius: 8px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; scroll-padding-top: 4rem; }
+
+    body {
+      font-family: 'Source Serif Pro', serif;
+      background-color: var(--bg-main);
+      color: var(--primary-text);
+      margin: 0;
+      font-size: 1.1rem;
+      line-height: 1.8;
+    }
+
+    .page-wrapper {
+      display: flex;
+      flex-direction: column;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 40px;
+    }
+    
+    .main-layout {
+      display: flex;
+      gap: 40px;
+    }
+
+    .toc-container {
+      flex: 0 0 300px;
+      position: sticky;
+      top: 40px;
+      align-self: flex-start;
+    }
+
+    .toc {
+      background: var(--bg-container);
+      padding: 25px;
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--border-color);
+    }
+    .toc h3 { 
+      font-family: 'Inter', sans-serif;
+      margin-top: 0; 
+      font-size: 1.2rem; 
+      color: var(--primary-dark); 
+      border-bottom: 2px solid var(--primary-blue);
+      padding-bottom: 10px;
+    }
+    .toc ul { list-style: none; padding: 0; margin: 0; }
+    .toc li a {
+      font-family: 'Inter', sans-serif;
+      display: block;
+      padding: 10px 15px;
+      color: var(--secondary-text);
+      text-decoration: none;
+      font-size: 0.95rem;
+      border-radius: 6px;
+      transition: all 0.2s ease;
+      border-left: 4px solid transparent;
+    }
+    .toc li a:hover { background-color: #f1f3f5; color: var(--primary-blue); }
+    .toc li a.active {
+      background-color: #e9f3ff;
+      color: var(--primary-blue);
+      font-weight: 600;
+      border-left-color: var(--primary-blue);
+    }
+
+    .main-content {
+      flex: 1 1 0;
+      min-width: 0;
+      background: var(--bg-container);
+      padding: 50px 70px;
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow-md);
+      border: 1px solid var(--border-color);
+    }
+
+    h1, h2, h3, h4 {
+      font-family: 'Inter', sans-serif;
+      color: var(--primary-dark);
+      margin: 3rem 0 1.5rem 0;
+      line-height: 1.4;
+      font-weight: 700;
+    }
+    h1 { font-size: 2.8rem; letter-spacing: -0.03em; text-align: center; margin-bottom: 1rem; }
+    .subtitle { font-size: 1.3rem; text-align: center; color: var(--secondary-text); margin-bottom: 3rem; font-style: italic; }
+    
+    h2 { font-size: 2rem; letter-spacing: -0.02em; border-bottom: 1px solid var(--border-color); padding-bottom: 0.75rem; }
+    h3 { font-size: 1.5rem; font-weight: 600; }
+    h4 { font-size: 1.2rem; font-weight: 600; color: var(--secondary-text); }
+
+    p, ul, ol { margin-bottom: 1.5rem; }
+    ul, ol { padding-left: 30px; }
+    ul li::marker { color: var(--primary-blue); font-size: 1.2em; }
+    a { color: var(--primary-blue); text-decoration: none; font-weight: 600; }
+    a:hover { text-decoration: underline; }
+    strong { font-weight: 600; color: var(--primary-dark); }
+
+    .doc-header { margin-bottom: 4rem; }
+    .doc-control {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.9rem;
+      color: var(--secondary-text);
+      background-color: var(--bg-main);
+      padding: 20px;
+      border-radius: var(--border-radius);
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 15px;
+      border: 1px solid var(--border-color);
+    }
+    .doc-control div span { display: block; font-weight: 600; color: var(--primary-dark); }
+    
+    .callout {
+        padding: 25px;
+        margin: 2.5rem 0;
+        border-radius: var(--border-radius);
+        border-left: 5px solid;
+        display: flex;
+        align-items: flex-start;
+        font-family: 'Inter', sans-serif;
+    }
+    .callout-icon { flex-shrink: 0; margin-right: 15px; width: 24px; height: 24px; }
+    .callout-content { flex-grow: 1; }
+    .callout-content > *:first-child { margin-top: 0; }
+    .callout-content > *:last-child { margin-bottom: 0; }
+    
+    .note { background-color: #e9f3ff; border-color: var(--primary-blue); }
+    .warning { background-color: #fff9e0; border-color: var(--accent-yellow); }
+    .critical { background-color: #fdeeee; border-color: var(--accent-red); }
+
+    .protocol-section { counter-reset: step-counter; }
+    .protocol-step {
+      counter-increment: step-counter;
+      margin-bottom: 2.5rem;
+      position: relative;
+      padding-left: 60px;
+      padding-top: 5px;
+    }
+    .protocol-step::before {
+      content: counter(step-counter);
+      position: absolute;
+      left: 0;
+      top: 0;
+      background: var(--primary-blue);
+      color: white;
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      text-align: center;
+      line-height: 42px;
+      font-weight: 700;
+      font-size: 1.2rem;
+      font-family: 'Inter', sans-serif;
+    }
+    
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 2.5rem 0;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--border-color);
+      border-radius: var(--border-radius);
+      overflow: hidden;
+      font-family: 'Inter', sans-serif;
+    }
+    th, td {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border-color);
+      text-align: left;
+    }
+    th {
+      background-color: var(--bg-main);
+      font-weight: 600;
+      color: var(--primary-dark);
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    tr:last-child td { border-bottom: none; }
+    tr:hover { background-color: #f8f9fa; }
+    td ul, td ol { padding-left: 20px; margin: 0; }
+
+    pre {
+        background-color: var(--code-bg);
+        border-radius: var(--border-radius);
+        margin: 2.5rem 0;
+        box-shadow: var(--shadow-md);
+        overflow: hidden;
+        border: 1px solid #3a3a5a;
+    }
+    .code-header {
+        background-color: var(--code-header);
+        padding: 12px 20px;
+        color: #c8c8d8;
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.9rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .copy-btn {
+        background: #3a3a5a;
+        border: 1px solid #5a5a7a;
+        color: #c8c8d8;
+        cursor: pointer;
+        font-size: 0.85rem;
+        padding: 6px 12px;
+        border-radius: 6px;
+        transition: all 0.2s ease;
+    }
+    .copy-btn:hover { background-color: #4a4a6a; color: white; }
+    code {
+        display: block;
+        padding: 25px;
+        color: var(--code-text);
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 1rem;
+        line-height: 1.7;
+        white-space: pre-wrap;
+        word-break: break-all;
+    }
+    
+    .reference-list { list-style: none; padding-left: 0; }
+    .reference-list li {
+        margin-bottom: 1.5rem;
+        padding-left: 2.5rem;
+        position: relative;
+    }
+    .reference-list li::before {
+        content: counter(ref-counter) ".";
+        counter-increment: ref-counter;
+        position: absolute;
+        left: 0;
+        top: 1px;
+        color: var(--primary-dark);
+        font-weight: 600;
+        font-family: 'Inter', sans-serif;
+    }
+    
+    @media (max-width: 1200px) {
+        .main-layout { flex-direction: column; }
+        .toc-container { position: static; margin-bottom: 40px; flex-basis: auto; }
+        .main-content { padding: 40px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="page-wrapper">
+  <header class="doc-header">
+    <h1>Conceptual Technical Protocol</h1>
+    <p class="subtitle">A Framework for Dual CRISPR-HSC Engineering to Potentially Treat Type 1 Diabetes</p>
+    <div class="doc-control">
+      <div><span>Document ID:</span> T1D-HSC-CONCEPT-v1.0</div>
+      <div><span>Version:</span> 1.0</div>
+      <div><span>Status:</span> Preclinical Concept / For Discussion</div>
+      <div><span>Author:</span> Abdullah M. Doumi</div>
+    </div>
+  </header>
+
+  <div class="main-layout">
+    <aside class="toc-container">
+      <nav class="toc">
+        <h3>Table of Contents</h3>
+        <ul id="toc-list">
+          <li><a href="#abstract">Abstract</a></li>
+          <li><a href="#sec-1">I. Rationale & Hypothesis</a></li>
+          <li><a href="#sec-2">II. Materials & Reagents</a></li>
+          <li><a href="#sec-3">III. Proposed Experimental Procedure</a></li>
+          <li><a href="#sec-4">IV. Proposed Analytical & QC Cascade</a></li>
+          <li><a href="#sec-5">V. Conceptual Translational Framework</a></li>
+          <li><a href="#sec-6">VI. Proposed Statistical Framework</a></li>
+          <li><a href="#sec-7">VII. Appendices</a></li>
+          <li><a href="#sec-8">VIII. Literature References</a></li>
+        </ul>
+      </nav>
+    </aside>
+
+    <main class="main-content">
+      <section id="abstract">
+        <h2>Abstract</h2>
+        <p>This document specifies a comprehensive, conceptual protocol intended to serve as a framework for the development of an autologous cell therapy for Type 1 Diabetes (T1D). The proposed therapeutic strategy involves a dual-editing approach targeting two critical immune checkpoint genes: <strong>CTLA4</strong> and <strong>PDCD1</strong>. The design utilizes a precision Adenine Base Editor (ABE8e) to introduce a gain-of-function <code>p.Lys78Arg (K78R)</code> substitution in CTLA4, with the goal of enhancing regulatory T-cell (Treg) stability and suppressive function. Concurrently, a high-fidelity Cas9 nuclease (HiFi-Cas9) is proposed to mediate a knockout of PDCD1 (PD-1), aiming to prevent T-effector cell exhaustion. This document details the conceptual end-to-end process, from HSC mobilization and enrichment to a proposed closed-system manufacturing workflow, including a rigorous quality control cascade and a framework for preclinical validation.</p>
+      </section>
+      
+      <section id="sec-1">
+        <h2>I. Rationale & Hypothesis</h2>
+        <h3>Core Therapeutic Hypothesis</h3>
+        <p>We hypothesize that the simultaneous, precision engineering of autologous hematopoietic stem cells (HSCs) to (1) enhance Treg function via a gain-of-function <strong>CTLA4</strong> mutation and (2) remove the primary exhaustion checkpoint <strong>PDCD1</strong> (PD-1) will re-establish durable, systemic immune tolerance to pancreatic β-cells, potentially leading to a long-term, insulin-independent state in patients with T1D.</p>
+
+        <h3>Key Scientific Objectives & Target Criteria</h3>
+        <p>The following are proposed target criteria for the successful preclinical development of this concept:</p>
+        <ul>
+          <li><strong>Editing Efficiency:</strong> To achieve ≥95% biallelic knockout of PDCD1 and ≥90% monoallelic knock-in of CTLA4 <code>p.K78R</code>, as verified by deep sequencing (≥10,000x coverage).</li>
+          <li><strong>Preclinical Efficacy:</strong> To demonstrate prevention of diabetes onset in ≥95% of humanized NSG-DQ8 mice post-challenge, maintaining normoglycemia for over 52 weeks.</li>
+          <li><strong>Genomic Safety:</strong> To demonstrate <0.1% indel formation at the CTLA4 on-target site and no detectable off-target edits (>0.1%) via orthogonal assays (e.g., GUIDE-seq, CIRCLE-seq).</li>
+          <li><strong>Long-Term Engraftment:</strong> To ensure ≥50% chimerism of edited human CD45+ cells in peripheral blood at 1-year post-transplantation in a murine model.</li>
+        </ul>
+      </section>
+      
+      <section id="sec-2" class="protocol-section">
+        <h2>II. Materials & Reagents (Proposed)</h2>
+        <div class="protocol-step">
+          <h3>Reagents & Consumables</h3>
+          <table>
+            <thead>
+              <tr><th>Reagent</th><th>Suggested Vendor</th><th>Example Catalog #</th><th>QC Requirement</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>ABE8e mRNA (CleanCap®)</td><td>TriLink</td><td>L-7607</td><td>≥95% Capping Efficiency</td></tr>
+              <tr><td>HiFi Cas9 v3 Protein</td><td>IDT</td><td>1081060</td><td>Endotoxin <0.1 EU/µg</td></tr>
+              <tr><td>Chemically-modified sgRNAs</td><td>Synthego</td><td>CRISPR-G-00XXXX</td><td>Purity >97% (HPLC)</td></tr>
+              <tr><td>CD34 MicroBead Kit, human</td><td>Miltenyi</td><td>130-100-453</td><td>GMP-grade</td></tr>
+              <tr><td>StemSpan™ SFEM II</td><td>STEMCELL</td><td>09605</td><td>Lot-to-lot consistency</td></tr>
+              <tr><td>CryoStor® CS10</td><td>BioLife</td><td>210102</td><td>Sterility certified</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="protocol-step">
+          <h3>Guide RNA Sequences (Conceptual)</h3>
+          <table>
+            <thead>
+              <tr><th>Target Gene</th><th>Sequence (5'→3')</th><th>Modification Pattern</th><th>Predicted Off-Targets</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>CTLA4 (for K78R via ABE8e)</td>
+                <td><code>GATGCASSGGCTGCAGGATCAG</code></td>
+                <td>2' O-Me + 3' PS (first/last 3 nt)</td>
+                <td>0 (CRISPOR/COSMID)</td>
+              </tr>
+              <tr>
+                <td>PDCD1 (HiFi Cas9)</td>
+                <td><code>ACAGCCGGCAGCAGATCCGAGG</code></td>
+                <td>2' O-Me + 3' PS (first/last 3 nt)</td>
+                <td>1 (intergenic, OT-Score < 0.5)</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="note">
+              <svg class="callout-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M13,17H11V11H13M13,9H11V7H13Z" /></svg>
+              <div class="callout-content"><strong>Note on sgRNA Design:</strong> These sequences are conceptual and optimized for ABE8e (NGG PAM) and HiFi Cas9 specificities. Modifications are proposed to enhance stability and reduce innate immune response. All guides would require empirical validation and QC.</div>
+          </div>
+        </div>
+      </section>
+
+      <section id="sec-3" class="protocol-section">
+        <h2>III. Proposed Experimental Procedure</h2>
+        <h3>Part A: HSC Isolation & Enrichment (Day -1)</h3>
+        <div class="protocol-step">
+          <h4>Mobilization & Collection</h4>
+          <p>A human donor leukapheresis product would be obtained following a 5-day G-CSF mobilization regimen (10 μg/kg/day). The product must be processed within 4 hours of collection to ensure maximal cell viability.</p>
+        </div>
+        <div class="protocol-step">
+          <h4>CD34+ Cell Enrichment</h4>
+          <p>The CliniMACS Prodigy® system with the CD34 Reagent Kit is proposed for use, following the manufacturer's protocol. This closed, automated process is designed to minimize contamination and ensure consistency.</p>
+          <ul>
+              <li><strong>Input:</strong> Total Nucleated Cells (TNC) from leukopak.</li>
+              <li><strong>Output:</strong> Enriched CD34+ cell fraction.</li>
+              <li><strong>QC Target:</strong> ≥95% CD34+ purity, ≥98% viability (7-AAD).</li>
+          </ul>
+        </div>
+
+        <h3>Part B: Gene Editing & Expansion (Day 0-3)</h3>
+        <div class="protocol-step">
+          <h4>RNP & mRNA Complex Preparation</h4>
+          <pre><div class="code-header"><span>RNP Complex Assembly (Per 1x10^6 cells)</span><button class="copy-btn">Copy</button></div><code>// All steps to be performed in a sterile BSC
+// 1. Prepare ABE8e RNP
+//    - 2.0 µg ABE8e mRNA
+//    - 4.0 µL CTLA4 sgRNA (100 µM stock)
+//    - Incubate 10 min at Room Temperature.
+
+// 2. Prepare HiFi Cas9 RNP
+//    - 1.5 µg HiFi Cas9 v3 Protein
+//    - 4.0 µL PDCD1 sgRNA (100 µM stock)
+//    - Incubate 10 min at Room Temperature.
+
+// 3. Combine complexes and add to 20 µL P3 Primary Cell Nucleofector™ Solution.</code></pre>
+        </div>
+        <div class="protocol-step">
+          <h4>Electroporation</h4>
+          <p>The Lonza 4D-Nucleofector™ X Unit with the EO-115 pulse code is proposed. Immediately after electroporation, cells must be transferred into pre-warmed Hypoxia-Mimetic Expansion Media to ensure recovery.</p>
+          <div class="critical">
+              <svg class="callout-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M13,14H11V10H13M13,18H11V16H13M1,21H23L12,2L1,21Z" /></svg>
+              <div class="callout-content"><strong>Critical Step:</strong> Cell viability drops significantly if left in the electroporation buffer for >2 minutes. The recovery step is time-critical and foundational to the success of the entire procedure.</div>
+          </div>
+        </div>
+        <div class="protocol-step">
+          <h4>Ex Vivo Culture</h4>
+          <p>Cells are to be cultured for 72 hours under hypoxic conditions (3% O₂, 5% CO₂, 37°C) in StemSpan™ SFEM II supplemented with a cocktail designed to promote HSC self-renewal:</p>
+          <ul>
+              <li><strong>SCF, TPO, Flt3-L:</strong> 50 ng/mL each</li>
+              <li><strong>UM171:</strong> 35 nM</li>
+              <li><strong>SR1:</strong> 750 nM</li>
+              <li><strong>N-Acetyl-L-cysteine:</strong> 1 mM (ROS Scavenger)</li>
+              <li><strong>Y-27632 ROCK inhibitor:</strong> 10 µM (for the first 24h only to enhance post-electroporation survival)</li>
+          </ul>
+        </div>
+        
+        <h3>Part C: Harvest & Formulation (Day 3)</h3>
+        <div class="protocol-step">
+          <h4>Cell Harvest and Final QC</h4>
+          <p>Cells are harvested, washed twice with PBS + 0.5% HSA. Aliquots are collected for final release testing as detailed in Section IV.</p>
+        </div>
+        <div class="protocol-step">
+          <h4>Cryopreservation</h4>
+          <p>The final cell product is resuspended in CryoStor® CS10 at a target concentration of 50x10⁶ viable CD34+ cells/mL. A controlled-rate freezer is used for cryopreservation before transfer to vapor-phase liquid nitrogen for long-term storage.</p>
+        </div>
+      </section>
+
+      <section id="sec-4" class="protocol-section">
+        <h2>IV. Proposed Analytical & QC Cascade</h2>
+        <h3>Final Product Release Specifications</h3>
+          <table>
+            <thead>
+              <tr><th>Parameter</th><th>Test Method</th><th>Proposed Acceptance Criteria</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Viability</td><td>7-AAD / Flow Cytometry</td><td>≥90%</td></tr>
+              <tr><td>Identity (CD34+)</td><td>Flow Cytometry</td><td>≥90% CD34+</td></tr>
+              <tr><td>Editing Efficiency (On-Target)</td><td>NGS (Amplicon-Seq)</td><td>PDCD1 KO ≥95%, CTLA4 KI (K78R) ≥90%</td></tr>
+              <tr><td>Genomic Integrity (Off-Target)</td><td>GUIDE-seq / CIRCLE-seq</td><td>No evidence of off-target editing >0.1%</td></tr>
+              <tr><td>Potency</td><td>In vitro Treg Suppression Assay</td><td>≥2-fold increase in suppression vs. mock</td></tr>
+              <tr><td>Sterility</td><td>BacT/ALERT® 3D</td><td>No growth at 14 days</td></tr>
+              <tr><td>Endotoxin</td><td>Kinetic Chromogenic LAL</td><td>≤0.5 EU/kg of recipient body weight</td></tr>
+            </tbody>
+          </table>
+      </section>
+
+      <section id="sec-5" class="protocol-section">
+        <h2>V. Conceptual Translational Framework</h2>
+          <div class="protocol-step">
+              <h3>Preclinical Toxicology (GLP Study Design)</h3>
+              <p>A 6-month toxicology study in non-human primates (Cynomolgus Macaque, N=6 per group) would be required under GLP conditions to assess safety prior to any human trials.</p>
+              <table>
+                  <thead>
+                      <tr><th>Assessment Area</th><th>Method</th><th>Frequency</th></tr>
+                  </thead>
+                  <tbody>
+                      <tr><td>Cytokine Release Syndrome</td><td>Luminex 30-plex Panel</td><td>0, 2, 6, 24, 48h post-infusion</td></tr>
+                      <tr><td>Neurotoxicity</td><td>Clinical observation, CSF analysis</td><td>Weekly x 4, then monthly</td></tr>
+                      <tr><td>Immunogenicity</td><td>Anti-Cas9 IgG/IgM ELISA</td><td>Monthly</td></tr>
+                      <tr><td>Clonal Tracking</td><td>LAM-PCR & Barcode Sequencing</td><td>Baseline, 3mo, 6mo, Terminal</td></tr>
+                  </tbody>
+              </table>
+          </div>
+          <div class="protocol-step">
+              <h3>GMP Manufacturing Workflow (Conceptual)</h3>
+              <p>The entire manufacturing process is designed to be executed within a closed, automated system to ensure sterility, consistency, and regulatory compliance.</p>
+              <pre><div class="code-header"><span>Closed System Process Flow</span><button class="copy-btn">Copy</button></div><code>// 1. INPUT: Leukapheresis Product Bag
+//     |
+//     V
+// 2. SELECTION: CliniMACS Prodigy® (CD34+)
+//     |
+//     V
+// 3. EDITING: MaxCyte GT® Flow Electroporation System
+//     |
+//     V
+// 4. EXPANSION: G-Rex® Bioreactor (in ISO 7 cleanroom)
+//     |
+//     V
+// 5. FORMULATION: Automated wash/concentration (e.g., LOVO)
+//     |
+//     V
+// 6. OUTPUT: Cryopreserved final product in CryoMACS® Bags</code></pre>
+          </div>
+      </section>
+
+      <section id="sec-6" class="protocol-section">
+        <h2>VI. Proposed Statistical Framework</h2>
+        <div class="protocol-step">
+          <h3>Power Analysis for Preclinical Efficacy</h3>
+          <p>The primary efficacy endpoint in a humanized mouse model would be diabetes-free survival. With N=20 mice/group, a study would be powered at >90% (α=0.05) to detect a hazard ratio of 0.2 (i.e., an 80% reduction in the rate of diabetes onset) in the treatment group compared to an untreated control group, assuming 90% incidence in controls by 52 weeks.</p>
+        </div>
+        <div class="protocol-step">
+          <h3>Proposed Analysis Plan</h3>
+          <ul>
+              <li><strong>Primary Endpoint:</strong> Time-to-diabetes analyzed by Kaplan-Meier curves with a log-rank test.</li>
+              <li><strong>Secondary Endpoints:</strong> HbA1c, body weight, and immune cell frequencies analyzed using a mixed-effects model for repeated measures (MMRM).</li>
+              <li><strong>Exploratory Endpoints:</strong> T-cell receptor (TCR) repertoire diversity (e.g., Shannon index) compared using a Wilcoxon rank-sum test.</li>
+          </ul>
+        </div>
+      </section>
+      
+      <section id="sec-7">
+          <h2>VII. Appendices</h2>
+          <h3>A. Estimated Cost Analysis (Per Patient, Research Grade)</h3>
+          <table>
+              <thead>
+                  <tr><th>Component</th><th>Estimated Cost (USD)</th><th>Notes</th></tr>
+              </thead>
+              <tbody>
+                  <tr><td>CD34+ Selection & Reagents</td><td>$12,500</td><td>Includes CliniMACS kit and consumables.</td></tr>
+                  <tr><td>Gene Editing Nucleases & Guides</td><td>$8,200</td><td>GMP-grade mRNA and HiFi protein.</td></tr>
+                  <tr><td>Cell Culture & Expansion Media</td><td>$6,000</td><td>Includes cytokines and small molecules.</td></tr>
+                  <tr><td>Quality Control & Sequencing</td><td>$15,000</td><td>NGS, flow, sterility, etc.</td></tr>
+                  <tr><td><strong>Subtotal</strong></td><td><strong>$41,700</strong></td><td>Excludes labor, overhead, and capital equipment.</td></tr>
+              </tbody>
+          </table>
+          <div class="warning">
+              <svg class="callout-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M12,1L21.5,21H2.5L12,1M12,6L5.5,18H18.5L12,6Z" /></svg>
+              <div class="callout-content"><strong>Disclaimer:</strong> These costs are high-level estimates for research-grade materials and do not reflect full GMP manufacturing costs, which are typically 5-10x higher and subject to scale and process optimization.</div>
+          </div>
+      </section>
+      
+      <section id="sec-8" class="references">
+          <h2>VIII. Literature References</h2>
+          <ol class="reference-list" style="counter-reset: ref-counter;">
+              <li>Jinek M, Chylinski K, Fonfara I, Hauer M, Doudna JA, Charpentier E. A programmable dual-RNA-guided DNA endonuclease in adaptive bacterial immunity. <em>Science</em>. 2012;337(6096):816-821.</li>
+              <li>Gaudelli NM, Komor AC, Rees HA, et al. Programmable base editing of A•T to G•C in genomic DNA without DNA cleavage. <em>Nature</em>. 2017;551(7681):464-471.</li>
+              <li>Schumann K, Lin S, Boyer E, et al. Generation of knock-in primary human T cells using Cas9 ribonucleoproteins. <em>Proc Natl Acad Sci U S A</em>. 2015;112(33):10437-10442.</li>
+              <li>Vail E, Li L, Srour EF. The effect of humanized mice on the study of human hematopoiesis. <em>Stem Cells Int</em>. 2012;2012:980562.</li>
+          </ol>
+      </section>
+      
+    </main>
+  </div>
+</div>
+<style>
+  .footer {
+    text-align: center;
+    margin-top: 60px;
+    padding-top: 20px;
+    border-top: 1px solid #e9ecef; /* Replaced var(--border-color) */
+    font-size: 0.9rem;
+    color: #6c757d; /* Replaced var(--secondary-text) */
+    font-family: 'Inter', sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial;
+  }
+  .footer a {
+    color: #0d6efd; /* Replaced var(--primary-blue) */
+    text-decoration: none;
+    font-weight: 600;
+  }
+  .footer a:hover {
+    text-decoration: underline;
+  }
+</style>
+
+<footer class="footer">
+  <p>Copyright © 2025 Abdullah M. Doumi. All Rights Reserved.</p>
+  <p>This document is part of a proprietary conceptual framework. Its use is governed by the terms outlined in the LICENSE file.
+     <!-- Important: Replace the link below with the actual link to your LICENSE file on GitHub -->
+     <a href="https://github.com/AbdullahDoumi/T1D-Gene-Therapy-Platform/blob/main/LICENSE.md" target="_blank">View License</a>
+  </p>
+</footer>
+
+<script>
+  // --- Copy to Clipboard for Code Blocks ---
+  const copyButtons = document.querySelectorAll('.copy-btn');
+  copyButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      const pre = button.closest('pre');
+      const code = pre.querySelector('code');
+      navigator.clipboard.writeText(code.innerText.replace(/^\/\/\s/gm, ''));
+      button.textContent = 'Copied!';
+      setTimeout(() => {
+        button.textContent = 'Copy';
+      }, 2000);
+    });
+  });
+
+  // --- Sticky TOC Active State on Scroll ---
+  const tocLinks = document.querySelectorAll('.toc a');
+  const sections = document.querySelectorAll('.main-content section');
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const id = entry.target.getAttribute('id');
+        document.querySelectorAll('.toc a.active').forEach(a => a.classList.remove('active'));
+        const activeLink = document.querySelector(`.toc a[href="#${id}"]`);
+        if (activeLink) {
+          activeLink.classList.add('active');
+        }
+      }
+    });
+  }, { rootMargin: "-30% 0px -70% 0px", threshold: 0 });
+
+  sections.forEach(section => {
+    observer.observe(section);
+  });
+</script>
+
+</body>
+</html>
